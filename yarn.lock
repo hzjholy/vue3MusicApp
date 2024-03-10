@@ -20,3 +20,8 @@
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/@better-scroll/shared-utils/-/shared-utils-2.5.1.tgz#ed6a1b5713462fa50afd8bb7d172ca218a0b7f2e"
   integrity sha512-AplkfSjXVYP9LZiD6JsKgmgQJ/mG4uuLmBuwLz8W5OsYc7AYTfN8kw6GqZ5OwCGoXkVhBGyd8NeC4xwYItp0aw==
+
+vue3-lazy@^1.0.0-alpha.1:
+  version "1.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/vue3-lazy/-/vue3-lazy-1.0.0-alpha.1.tgz#326a56c2ade4430c76b7ac90d33a7fde0af9aaa6"
+  integrity sha512-dpjpKK4DC5q+wZVtS/VY3X6pYBJHxRmYanr20s39RB6o6fvbneQ/DNuz37bipYfEdrEvbSZ95Y2SCexuznQNrQ==

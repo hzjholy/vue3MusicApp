@@ -93,8 +93,8 @@ export default {
     },
     cacheAlbum(album) {
       // storage.session.set(ALBUM_KEY, album)
-    }
-  }
+    },
+  },
 };
 </script>
 
