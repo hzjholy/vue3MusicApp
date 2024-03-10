@@ -12,8 +12,52 @@
         <h1 class="title">{{ currentSong.name }}</h1>
         <h2 class="subtitle">{{ currentSong.singer }}</h2>
       </div>
+      <div class="bottom">
+        <div class="dot-wrapper">
+          <span class="dot" :class="{ active: currentShow === 'cd' }"></span>
+          <span class="dot" :class="{ active: currentShow === 'lyric' }"></span>
+        </div>
+        <div class="progress-wrapper">
+          <span class="time time-l">{{ formatTime(currentTime) }}</span>
+          <div class="progress-bar-wrapper">
+            <progress-bar
+              ref="barRef"
+              :progress="progress"
+              @progress-changing="onProgressChanging"
+              @progress-changed="onProgressChanged"
+            ></progress-bar>
+          </div>
+          <span class="time time-r">{{
+            formatTime(currentSong.duration)
+          }}</span>
+        </div>
+        <div class="operators">
+          <div class="icon i-left">
+            <i class="icon-sequence"></i>
+            <!-- <i @click="changeMode" :class="modeIcon"></i> -->
+          </div>
+          <div class="icon i-left" :class="disableCls">
+            <i class="icon-prev"></i>
+            <!-- <i @click="prev" class="icon-prev"></i> -->
+          </div>
+          <div class="icon i-center" :class="disableCls">
+            <i :class="playIcon" @click="togglePlay"></i>
+          </div>
+          <div class="icon i-right" :class="disableCls">
+            <i class="icon-next"></i>
+            <!-- <i @click="next" class="icon-next"></i> -->
+          </div>
+          <div class="icon i-right">
+            <i class="icon-not-favorite"></i>
+            <!-- <i
+              @click="toggleFavorite(currentSong)"
+              :class="getFavoriteIcon(currentSong)"
+            ></i> -->
+          </div>
+        </div>
+      </div>
     </div>
-    <audio ref="audioRef"></audio>
+    <audio ref="audioRef" @pause="pause"></audio>
   </div>
 </template>
 
@@ -29,6 +73,11 @@ export default {
     // 自己处理响应式 store
     const fullScreen = computed(() => store.state.fullScreen);
     const currentSong = computed(() => store.getters.currentSong);
+    const playing = computed(() => store.state.playing);
+
+    const playIcon = computed(() => {
+      return playing.value ? "icon-pause" : "icon-play";
+    });
 
     watch(currentSong, (newSong) => {
       if (!newSong.id || !newSong.url) {
@@ -36,18 +85,40 @@ export default {
       }
       const audioEl = audioRef.value;
       audioEl.src = newSong.url;
-      // audioEl.play();
+      audioEl.play();
+    });
+
+    watch(playing, (newPlaying) => {
+      const audioEl = audioRef.value;
+      newPlaying ? audioEl.play() : audioEl.pause();
     });
 
     function goBack() {
       store.commit("setFullScreen", false);
     }
 
+    function togglePlay() {
+      store.commit("setPlayingState", !playing.value);
+    }
+
+    // 不是用户行为导致暂停【待机、睡眠】，需要同步状态
+    function pause() {
+      store.commit("setPlayingState", false);
+    }
+
+    function formatTime() {}
+    function getFavoriteIcon() {}
+
     return {
       audioRef,
       fullScreen,
       currentSong,
+      playIcon,
       goBack,
+      togglePlay,
+      pause,
+      formatTime,
+      getFavoriteIcon,
     };
   },
 };
