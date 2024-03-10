@@ -87,6 +87,9 @@ export default {
         index,
       });
     },
+    random() {
+      this.randomPlay(this.currentList);
+    },
     ...mapActions(["selectPlay", "randomPlay"]),
   },
 };
