@@ -37,15 +37,13 @@
             <!-- <i @click="changeMode" :class="modeIcon"></i> -->
           </div>
           <div class="icon i-left" :class="disableCls">
-            <i class="icon-prev"></i>
-            <!-- <i @click="prev" class="icon-prev"></i> -->
+            <i class="icon-prev" @click="prev"></i>
           </div>
           <div class="icon i-center" :class="disableCls">
             <i :class="playIcon" @click="togglePlay"></i>
           </div>
           <div class="icon i-right" :class="disableCls">
-            <i class="icon-next"></i>
-            <!-- <i @click="next" class="icon-next"></i> -->
+            <i class="icon-next" @click="next"></i>
           </div>
           <div class="icon i-right">
             <i class="icon-not-favorite"></i>
@@ -74,6 +72,8 @@ export default {
     const fullScreen = computed(() => store.state.fullScreen);
     const currentSong = computed(() => store.getters.currentSong);
     const playing = computed(() => store.state.playing);
+    const currentIndex = computed(() => store.state.currentIndex);
+    const playlist = computed(() => store.state.playlist);
 
     const playIcon = computed(() => {
       return playing.value ? "icon-pause" : "icon-play";
@@ -106,6 +106,49 @@ export default {
       store.commit("setPlayingState", false);
     }
 
+    function prev() {
+      const list = playlist.value;
+
+      if (!list.length) return;
+
+      if (list.length === 1) {
+        loop();
+      } else {
+        let index = currentIndex.value - 1;
+        if (index === -1) {
+          index = list.length - 1;
+        }
+        store.commit("setCurrentIndex", index);
+        if (!playing.value) {
+          store.commit("setPlayingState", true);
+        }
+      }
+    }
+
+    function next() {
+      const list = playlist.value;
+      if (!list.length) return;
+
+      if (list.length === 1) {
+        loop();
+      } else {
+        let index = currentIndex.value + 1;
+        if (index === list.length) {
+          index = 0;
+        }
+        store.commit("setCurrentIndex", index);
+        if (!playing.value) {
+          store.commit("setPlayingState", true);
+        }
+      }
+    }
+
+    function loop() {
+      const audioEl = audioRef.value;
+      audioEl.currentTime = 0;
+      audioEl.play();
+    }
+
     function formatTime() {}
     function getFavoriteIcon() {}
 
@@ -117,6 +160,8 @@ export default {
       goBack,
       togglePlay,
       pause,
+      prev,
+      next,
       formatTime,
       getFavoriteIcon,
     };
