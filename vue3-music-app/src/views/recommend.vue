@@ -1,5 +1,11 @@
 <template>
-  <div class="recommend">推荐页面</div>
+  <div class="recommend">
+    <div class="slider-wrapper">
+      <div class="slider-content">
+        <slider v-if="sliders.length" :sliders="sliders" />
+      </div>
+    </div>
+  </div>
   <!-- <div class="recommend" v-loading="loading">
     <scroll class="recommend-content">
       <div>
@@ -43,24 +49,24 @@
 
 <script>
 import { getRecommend } from "@/service/recommend";
-// import Slider from '@/components/base/slider/slider'
+import Slider from "@/components/base/slider/slider";
 // import Scroll from '@/components/wrap-scroll'
 // import storage from 'good-storage'
 // import { ALBUM_KEY } from '@/assets/js/constant'
 
 export default {
   name: "recommend",
-  // components: {
-  //   Slider,
-  //   Scroll
-  // },
-  // data() {
-  //   return {
-  //     sliders: [],
-  //     albums: [],
-  //     selectedAlbum: null
-  //   }
-  // },
+  components: {
+    Slider,
+    // Scroll
+  },
+  data() {
+    return {
+      sliders: [],
+      albums: [],
+      selectedAlbum: null,
+    };
+  },
   // computed: {
   //   loading() {
   //     return !this.sliders.length && !this.albums.length
@@ -68,8 +74,8 @@ export default {
   // },
   async created() {
     const result = await getRecommend();
-    console.log("result",result);
-    // this.sliders = result.sliders
+    console.log("result", result);
+    this.sliders = result.sliders;
     // this.albums = result.albums
   },
   // methods: {
