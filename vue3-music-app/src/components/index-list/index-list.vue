@@ -1,6 +1,6 @@
 <template>
   <!-- <scroll class="index-list" :probe-type="3" @scroll="onScroll" ref="scrollRef"> -->
-  <scroll class="index-list" :probe-type="3" @scroll="onScroll">
+  <scroll class="index-list" :probe-type="3" @scroll="onScroll" ref="scrollRef">
     <ul ref="groupRef">
       <li v-for="group in data" :key="group.title" class="group">
         <h2 class="title">{{ group.title }}</h2>
@@ -20,14 +20,6 @@
     <div class="fixed" :style="fixedStyle" v-show="fixedTitle">
       <div class="fixed-title">{{ fixedTitle }}</div>
     </div>
-  </scroll>
-  <!-- <div
-      class="fixed"
-      v-show="fixedTitle"
-      :style="fixedStyle"
-    >
-      <div class="fixed-title">{{fixedTitle}}</div>
-    </div>
     <div
       class="shortcut"
       @touchstart.stop.prevent="onShortcutTouchStart"
@@ -40,18 +32,19 @@
           :key="item"
           :data-index="index"
           class="item"
-          :class="{'current':currentIndex===index}">
-          {{item}}
+          :class="{ current: currentIndex === index }"
+        >
+          {{ item }}
         </li>
       </ul>
-    </div> -->
-  <!-- </scroll> -->
+    </div>
+  </scroll>
 </template>
 
 <script>
 import Scroll from "@/components/wrap-scroll/index";
 import useFixed from "./use-fixed";
-// import useShortcut from './use-shortcut'
+import useShortcut from "./use-shortcut";
 
 export default {
   name: "index-list",
@@ -66,27 +59,32 @@ export default {
   },
   // emits: ["select"],
   setup(props, { emit }) {
-    const { groupRef, onScroll, fixedTitle, fixedStyle } = useFixed(props);
-    // const { groupRef, onScroll, fixedTitle, fixedStyle, currentIndex } = useFixed(props)
-    // const { shortcutList, scrollRef, onShortcutTouchStart, onShortcutTouchMove } = useShortcut(props, groupRef)
+    const { groupRef, onScroll, fixedTitle, fixedStyle, currentIndex } =
+      useFixed(props);
+    const {
+      shortcutList,
+      onShortcutTouchStart,
+      onShortcutTouchMove,
+      scrollRef,
+    } = useShortcut(props, groupRef);
 
-    // function onItemClick(item) {
-    //   emit('select', item)
-    // }
+    function onItemClick(item) {
+      //   emit('select', item)
+    }
 
     return {
-      // onItemClick,
-      // fixed
+      onItemClick,
+      // fixed return
+      currentIndex,
       groupRef,
       onScroll,
       fixedTitle,
       fixedStyle,
-      // currentIndex,
-      // // shortcut
-      // shortcutList,
-      // scrollRef,
-      // onShortcutTouchStart,
-      // onShortcutTouchMove
+      // shortcut return
+      shortcutList,
+      scrollRef,
+      onShortcutTouchStart,
+      onShortcutTouchMove,
     };
   },
 };
