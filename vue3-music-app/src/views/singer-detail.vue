@@ -11,6 +11,8 @@
 
 <script>
 import { getSingerDetail } from "@/service/singer";
+import { processSongs } from "@/service/song"
+
 
 export default {
   name: "singer-detail",
@@ -19,11 +21,12 @@ export default {
   },
   async created() {
     const result = await getSingerDetail(this.singer);
+    const songs = await processSongs(result.songs);
+    console.log("songs", songs);
     console.log("result", result);
   },
 };
 // import createDetailComponent from '@/assets/js/create-detail-component'
-// import { getSingerDetail } from '@/service/singer'
 // import { SINGER_KEY } from '@/assets/js/constant'
 
 // export default createDetailComponent('singer-detail', SINGER_KEY, getSingerDetail)
