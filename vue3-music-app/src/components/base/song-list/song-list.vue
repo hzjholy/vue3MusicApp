@@ -27,16 +27,16 @@ export default {
         return [];
       },
     },
-    rank: Boolean
+    rank: Boolean,
   },
   emits: ["select"],
   methods: {
     getDesc(song) {
       return `${song.singer}·${song.album}`;
     },
-    // selectItem(song, index) {
-    //   this.$emit('select', { song, index })
-    // },
+    selectItem(song, index) {
+      this.$emit("select", { song, index });
+    },
     // getRankCls(index) {
     //   if (index <= 2) {
     //     return `icon icon${index}`

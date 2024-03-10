@@ -75,12 +75,19 @@ export default {
   },
   mounted() {
     this.imageHeight = this.$refs.bgImage.clientHeight;
-    console.log("this.imageHeight",this.imageHeight);
+    console.log("this.imageHeight", this.imageHeight);
   },
   methods: {
     goBack() {
       this.$router.go(-1);
     },
+    selectItem({ song, index }) {
+      this.selectPlay({
+        list: this.songs,
+        index,
+      });
+    },
+    ...mapActions(["selectPlay", "randomPlay"]),
   },
 };
 </script>

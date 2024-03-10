@@ -41,8 +41,6 @@ export default {
     const songs = await processSongs(result.songs);
     this.songs = songs;
     this.loading = false;
-    console.log("songs", songs);
-    console.log("result", result);
   },
 };
 </script>

@@ -5,6 +5,9 @@ export function getSingerList() {
 }
 
 export function getSingerDetail(singer) {
+  if (!singer) {
+    singer = {};
+  }
   return get("api/getSingerDetail", {
     mid: singer.mid,
   });
