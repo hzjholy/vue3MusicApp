@@ -57,7 +57,7 @@ export default {
       },
     },
   },
-  // emits: ["select"],
+  emits: ["select"],
   setup(props, { emit }) {
     const { groupRef, onScroll, fixedTitle, fixedStyle, currentIndex } =
       useFixed(props);
@@ -69,7 +69,7 @@ export default {
     } = useShortcut(props, groupRef);
 
     function onItemClick(item) {
-      //   emit('select', item)
+      emit("select", item);
     }
 
     return {
