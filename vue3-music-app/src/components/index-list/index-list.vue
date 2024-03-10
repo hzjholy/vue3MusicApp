@@ -1,6 +1,6 @@
 <template>
   <!-- <scroll class="index-list" :probe-type="3" @scroll="onScroll" ref="scrollRef"> -->
-  <scroll class="index-list">
+  <scroll class="index-list" :probe-type="3" @scroll="onScroll">
     <ul ref="groupRef">
       <li v-for="group in data" :key="group.title" class="group">
         <h2 class="title">{{ group.title }}</h2>
@@ -17,6 +17,9 @@
         </ul>
       </li>
     </ul>
+    <div class="fixed" :style="fixedStyle" v-show="fixedTitle">
+      <div class="fixed-title">{{ fixedTitle }}</div>
+    </div>
   </scroll>
   <!-- <div
       class="fixed"
@@ -47,7 +50,7 @@
 
 <script>
 import Scroll from "@/components/wrap-scroll/index";
-// import useFixed from './use-fixed'
+import useFixed from "./use-fixed";
 // import useShortcut from './use-shortcut'
 
 export default {
@@ -63,6 +66,7 @@ export default {
   },
   // emits: ["select"],
   setup(props, { emit }) {
+    const { groupRef, onScroll, fixedTitle, fixedStyle } = useFixed(props);
     // const { groupRef, onScroll, fixedTitle, fixedStyle, currentIndex } = useFixed(props)
     // const { shortcutList, scrollRef, onShortcutTouchStart, onShortcutTouchMove } = useShortcut(props, groupRef)
 
@@ -73,10 +77,10 @@ export default {
     return {
       // onItemClick,
       // fixed
-      // groupRef,
-      // onScroll,
-      // fixedTitle,
-      // fixedStyle,
+      groupRef,
+      onScroll,
+      fixedTitle,
+      fixedStyle,
       // currentIndex,
       // // shortcut
       // shortcutList,
