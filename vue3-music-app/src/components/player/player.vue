@@ -55,7 +55,12 @@
         </div>
       </div>
     </div>
-    <audio ref="audioRef" @pause="pause"></audio>
+    <audio
+      ref="audioRef"
+      @pause="pause"
+      @canplay="ready"
+      @error="error"
+    ></audio>
   </div>
 </template>
 
@@ -66,6 +71,7 @@ export default {
   name: "player",
   setup() {
     const audioRef = ref(null);
+    const songReady = ref(false);
 
     const store = useStore();
     // 自己处理响应式 store
@@ -74,21 +80,25 @@ export default {
     const playing = computed(() => store.state.playing);
     const currentIndex = computed(() => store.state.currentIndex);
     const playlist = computed(() => store.state.playlist);
-
     const playIcon = computed(() => {
       return playing.value ? "icon-pause" : "icon-play";
+    });
+    const disableCls = computed(() => {
+      return songReady.value ? "" : "disable";
     });
 
     watch(currentSong, (newSong) => {
       if (!newSong.id || !newSong.url) {
         return;
       }
+      songReady.value = false;
       const audioEl = audioRef.value;
       audioEl.src = newSong.url;
       audioEl.play();
     });
 
     watch(playing, (newPlaying) => {
+      if (!songReady.value) return;
       const audioEl = audioRef.value;
       newPlaying ? audioEl.play() : audioEl.pause();
     });
@@ -98,6 +108,7 @@ export default {
     }
 
     function togglePlay() {
+      if (!songReady.value) return;
       store.commit("setPlayingState", !playing.value);
     }
 
@@ -108,6 +119,8 @@ export default {
 
     function prev() {
       const list = playlist.value;
+
+      if (!songReady.value || !list.length) return;
 
       if (!list.length) return;
 
@@ -127,6 +140,8 @@ export default {
 
     function next() {
       const list = playlist.value;
+      if (!songReady.value || !list.length) return;
+
       if (!list.length) return;
 
       if (list.length === 1) {
@@ -149,6 +164,16 @@ export default {
       audioEl.play();
     }
 
+    function ready() {
+      if (songReady.value) return;
+      songReady.value = true;
+    }
+
+    // 允许错误情况下，也可以切换歌曲
+    function error() {
+      songReady.value = true;
+    }
+
     function formatTime() {}
     function getFavoriteIcon() {}
 
@@ -157,11 +182,14 @@ export default {
       fullScreen,
       currentSong,
       playIcon,
+      disableCls,
       goBack,
       togglePlay,
       pause,
       prev,
       next,
+      ready,
+      error,
       formatTime,
       getFavoriteIcon,
     };
