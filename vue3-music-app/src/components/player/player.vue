@@ -45,11 +45,10 @@
             <i class="icon-next" @click="next"></i>
           </div>
           <div class="icon i-right">
-            <i class="icon-not-favorite"></i>
-            <!-- <i
+            <i
               @click="toggleFavorite(currentSong)"
               :class="getFavoriteIcon(currentSong)"
-            ></i> -->
+            ></i>
           </div>
         </div>
       </div>
@@ -68,6 +67,7 @@ import { useStore } from "vuex";
 import { computed, watch, ref } from "vue";
 
 import useMode from "./use-mode";
+import useFavorite from "./use-favorite";
 
 export default {
   name: "player",
@@ -84,6 +84,7 @@ export default {
     const currentIndex = computed(() => store.state.currentIndex);
     // hooks
     const { modeIcon, changeMode } = useMode();
+    const { getFavoriteIcon, toggleFavorite } = useFavorite();
     // computed
     const playlist = computed(() => store.state.playlist);
     const playIcon = computed(() => {
@@ -181,7 +182,6 @@ export default {
     }
 
     function formatTime() {}
-    function getFavoriteIcon() {}
 
     return {
       audioRef,
@@ -198,9 +198,10 @@ export default {
       error,
       formatTime,
       getFavoriteIcon,
+      toggleFavorite,
       // mode
       modeIcon,
-      changeMode
+      changeMode,
     };
   },
 };
