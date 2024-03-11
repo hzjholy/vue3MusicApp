@@ -20,6 +20,7 @@ export function processSongs(songs) {
         // return song.url && song.url.indexOf("vkey") > -1;
         // 接口已坏，没有数据
         song.url = "http://127.0.0.1:5501/static/music/01.mp3";
+        song.duration = "251";
         return song;
       });
   });

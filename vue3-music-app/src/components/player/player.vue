@@ -58,6 +58,8 @@
       @pause="pause"
       @canplay="ready"
       @error="error"
+      @timeupdate="updateTime"
+      @ended="end"
     ></audio>
   </div>
 </template>
@@ -69,12 +71,21 @@ import { computed, watch, ref } from "vue";
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
 
+import ProgressBar from "./progress-bar.vue";
+import { formatTime } from "@/assets/js/util";
+import { PLAY_MODE } from "@/assets/js/constant";
+
 export default {
   name: "player",
+  components: {
+    ProgressBar,
+  },
   setup() {
     // data
     const audioRef = ref(null);
     const songReady = ref(false);
+    const currentTime = ref(0);
+    let progressChanging = false;
     // vuex
     const store = useStore();
     // 自己处理响应式 store
@@ -82,6 +93,7 @@ export default {
     const currentSong = computed(() => store.getters.currentSong);
     const playing = computed(() => store.state.playing);
     const currentIndex = computed(() => store.state.currentIndex);
+    const playMode = computed(() => store.state.playMode);
     // hooks
     const { modeIcon, changeMode } = useMode();
     const { getFavoriteIcon, toggleFavorite } = useFavorite();
@@ -93,11 +105,15 @@ export default {
     const disableCls = computed(() => {
       return songReady.value ? "" : "disable";
     });
+    const progress = computed(() => {
+      return currentTime.value / currentSong.value.duration;
+    });
     // watch
     watch(currentSong, (newSong) => {
       if (!newSong.id || !newSong.url) {
         return;
       }
+      currentTime.value = 0;
       songReady.value = false;
       const audioEl = audioRef.value;
       audioEl.src = newSong.url;
@@ -169,6 +185,7 @@ export default {
       const audioEl = audioRef.value;
       audioEl.currentTime = 0;
       audioEl.play();
+      store.commit("setPlayingState", true);
     }
 
     function ready() {
@@ -181,14 +198,42 @@ export default {
       songReady.value = true;
     }
 
-    function formatTime() {}
+    function updateTime(e) {
+      if (!progressChanging) {
+        currentTime.value = e.target.currentTime;
+      }
+    }
+
+    function onProgressChanging(progress) {
+      currentTime.value = currentSong.value.duration * progress;
+      progressChanging = true;
+    }
+
+    function onProgressChanged(progress) {
+      progressChanging = false;
+      audioRef.value.currentTime = currentTime.value =
+        currentSong.value.duration * progress;
+      if (!playing.value) {
+        store.commit("setPlayingState", true);
+      }
+    }
+    function end() {
+      currentTime.value = 0;
+      if (playMode.value == PLAY_MODE.loop) {
+        loop();
+      } else {
+        next();
+      }
+    }
 
     return {
       audioRef,
       fullScreen,
+      currentTime,
       currentSong,
       playIcon,
       disableCls,
+      progress,
       goBack,
       togglePlay,
       pause,
@@ -196,12 +241,16 @@ export default {
       next,
       ready,
       error,
-      formatTime,
+      end,
+      updateTime,
       getFavoriteIcon,
       toggleFavorite,
       // mode
       modeIcon,
       changeMode,
+      formatTime,
+      onProgressChanging,
+      onProgressChanged,
     };
   },
 };
