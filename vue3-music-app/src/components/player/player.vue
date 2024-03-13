@@ -18,7 +18,7 @@
         @touchmove.prevent="onMiddleTouchMove"
         @touchend.prevent="onMiddleTouchEnd"
       >
-        <div class="middle-l" :style="middleLStyle" v-if="false">
+        <div class="middle-l" :style="middleLStyle">
           <div ref="cdWrapperRef" class="cd-wrapper">
             <div ref="cdRef" class="cd">
               <img
@@ -33,7 +33,7 @@
             <div class="playing-lyric">{{ playingLyric }}</div>
           </div>
         </div>
-        <scroll class="middle-r" ref="lyricScrollRef">
+        <scroll class="middle-r" ref="lyricScrollRef" :style="middleRStyle">
           <div class="lyric-wrapper">
             <div v-if="currentLyric" ref="lyricListRef">
               <p
@@ -111,6 +111,7 @@ import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
 import useCd from "./use-cd";
 import useLyric from "./use-lyric";
+import useMiddleInteractive from "./use-middle-interactive";
 
 import ProgressBar from "./progress-bar.vue";
 import Scroll from "@/components/base/scroll/scroll.vue";
@@ -148,10 +149,21 @@ export default {
       lyricListRef,
       playLyric,
       stopLyric,
+      pureMusicLyric,
+      playingLyric,
     } = useLyric({
       songReady,
       currentTime,
     });
+    const {
+      currentShow,
+      middleLStyle,
+      middleRStyle,
+      onMiddleTouchStart,
+      onMiddleTouchMove,
+      onMiddleTouchEnd,
+    } = useMiddleInteractive();
+
     // computed
     const playlist = computed(() => store.state.playlist);
     const playIcon = computed(() => {
@@ -269,8 +281,8 @@ export default {
     function onProgressChanging(progress) {
       currentTime.value = currentSong.value.duration * progress;
       progressChanging = true;
-      playLyric() // 同步位当前位置
-      stopLyric() // 拖动时候停止
+      playLyric(); // 同步位当前位置
+      stopLyric(); // 拖动时候停止
     }
 
     function onProgressChanged(progress) {
@@ -280,7 +292,7 @@ export default {
       if (!playing.value) {
         store.commit("setPlayingState", true);
       }
-      playLyric()
+      playLyric();
     }
     function end() {
       currentTime.value = 0;
@@ -325,6 +337,15 @@ export default {
       currentLineNum,
       lyricScrollRef,
       lyricListRef,
+      pureMusicLyric,
+      playingLyric,
+      // middle-interactive
+      currentShow,
+      middleLStyle,
+      middleRStyle,
+      onMiddleTouchStart,
+      onMiddleTouchMove,
+      onMiddleTouchEnd,
     };
   },
 };

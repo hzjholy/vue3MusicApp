@@ -6,6 +6,8 @@ import Lyric from "lyric-parser";
 export default function useLyric({ songReady, currentTime }) {
   const currentLyric = ref(null);
   const currentLineNum = ref(0);
+  const pureMusicLyric = ref(0);
+  const playingLyric = ref("");
   const lyricScrollRef = ref(null);
   const lyricListRef = ref(null);
 
@@ -16,10 +18,11 @@ export default function useLyric({ songReady, currentTime }) {
     if (!newSong.url || !newSong.id) {
       return;
     }
-    stopLyric()
-    currentLyric.value = null // 多次切歌需要等歌词加载后执行
-    currentLineNum.value = 0
-
+    stopLyric();
+    currentLyric.value = null; // 多次切歌需要等歌词加载后执行
+    currentLineNum.value = 0;
+    pureMusicLyric.value = "";
+    playingLyric.value = "";
 
     const lyric = await getLyric(newSong);
     store.commit("addSongLyric", {
@@ -30,10 +33,19 @@ export default function useLyric({ songReady, currentTime }) {
     if (currentSong.value.lyric !== lyric) {
       return;
     }
-    currentLyric.value = new Lyric(lyric, handleLyric);
 
-    if (songReady.value) {
-      playLyric();
+    currentLyric.value = new Lyric(lyric, handleLyric);
+    const hasLyric = currentLyric.value.lines.length;
+
+    if (hasLyric) {
+      if (songReady.value) {
+        playLyric();
+      }
+    } else {
+      playingLyric.value = pureMusicLyric.value = lyric.replace(
+        /\[(\d{2}):(\d{2}):(\d{2})\]/g,
+        ""
+      );
     }
   });
 
@@ -51,8 +63,9 @@ export default function useLyric({ songReady, currentTime }) {
     }
   }
 
-  function handleLyric({ lineNum }) {
+  function handleLyric({ lineNum, txt }) {
     currentLineNum.value = lineNum;
+    playingLyric.value = txt;
     const scrollComp = lyricScrollRef.value;
     const listEl = lyricListRef.value;
     if (!listEl) {
@@ -74,5 +87,7 @@ export default function useLyric({ songReady, currentTime }) {
     stopLyric,
     lyricScrollRef,
     lyricListRef,
+    pureMusicLyric,
+    playingLyric,
   };
 }
