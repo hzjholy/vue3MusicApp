@@ -18,7 +18,7 @@
         @touchmove.prevent="onMiddleTouchMove"
         @touchend.prevent="onMiddleTouchEnd"
       >
-        <div class="middle-l" :style="middleLStyle">
+        <div class="middle-l" :style="middleLStyle" v-if="false">
           <div ref="cdWrapperRef" class="cd-wrapper">
             <div ref="cdRef" class="cd">
               <img
@@ -33,7 +33,7 @@
             <div class="playing-lyric">{{ playingLyric }}</div>
           </div>
         </div>
-        <scroll class="middle-r" ref="lyricScrollRef" :style="middleRStyle">
+        <scroll class="middle-r" ref="lyricScrollRef">
           <div class="lyric-wrapper">
             <div v-if="currentLyric" ref="lyricListRef">
               <p
@@ -110,8 +110,10 @@ import { computed, watch, ref } from "vue";
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
 import useCd from "./use-cd";
+import useLyric from "./use-lyric";
 
 import ProgressBar from "./progress-bar.vue";
+import Scroll from "@/components/base/scroll/scroll.vue";
 import { formatTime } from "@/assets/js/util";
 import { PLAY_MODE } from "@/assets/js/constant";
 
@@ -119,6 +121,7 @@ export default {
   name: "player",
   components: {
     ProgressBar,
+    Scroll,
   },
   setup() {
     // data
@@ -138,6 +141,17 @@ export default {
     const { modeIcon, changeMode } = useMode();
     const { getFavoriteIcon, toggleFavorite } = useFavorite();
     const { cdCls, cdRef, cdImageRef } = useCd();
+    const {
+      currentLyric,
+      currentLineNum,
+      lyricScrollRef,
+      lyricListRef,
+      playLyric,
+      stopLyric,
+    } = useLyric({
+      songReady,
+      currentTime,
+    });
     // computed
     const playlist = computed(() => store.state.playlist);
     const playIcon = computed(() => {
@@ -164,7 +178,13 @@ export default {
     watch(playing, (newPlaying) => {
       if (!songReady.value) return;
       const audioEl = audioRef.value;
-      newPlaying ? audioEl.play() : audioEl.pause();
+      if (newPlaying) {
+        audioEl.play();
+        playLyric();
+      } else {
+        audioEl.pause();
+        stopLyric();
+      }
     });
     // methods
     function goBack() {
@@ -232,6 +252,7 @@ export default {
     function ready() {
       if (songReady.value) return;
       songReady.value = true;
+      playLyric();
     }
 
     // 允许错误情况下，也可以切换歌曲
@@ -248,6 +269,8 @@ export default {
     function onProgressChanging(progress) {
       currentTime.value = currentSong.value.duration * progress;
       progressChanging = true;
+      playLyric() // 同步位当前位置
+      stopLyric() // 拖动时候停止
     }
 
     function onProgressChanged(progress) {
@@ -257,6 +280,7 @@ export default {
       if (!playing.value) {
         store.commit("setPlayingState", true);
       }
+      playLyric()
     }
     function end() {
       currentTime.value = 0;
@@ -295,7 +319,12 @@ export default {
       // cd
       cdCls,
       cdRef,
-      cdImageRef
+      cdImageRef,
+      // lyric
+      currentLyric,
+      currentLineNum,
+      lyricScrollRef,
+      lyricListRef,
     };
   },
 };

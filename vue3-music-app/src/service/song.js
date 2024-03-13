@@ -41,7 +41,9 @@ export function getLyric(song) {
   return get("/api/getLyric", {
     mid,
   }).then((result) => {
-    const lyric = result ? result.lyric : "[00:00:00]该歌曲暂时无法获取歌词";
+    const lyric = result
+      ? result.lyric
+      : "[00:00:00]该歌曲歌词暂时无法获取歌词";
     lyricMap[mid] = lyric;
     return lyric;
   });
