@@ -25,3 +25,5 @@ https://github.com/ustbhuangyi/vue3-lazy
 https://better-scroll.github.io/docs/zh-CN/plugins/observe-dom.html
 
 yarn add vue3-lazy -S
+
+yarn add create-keyframe-animation -S 
