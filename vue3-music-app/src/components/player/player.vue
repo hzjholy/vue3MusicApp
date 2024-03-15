@@ -1,5 +1,5 @@
 <template>
-  <div class="player">
+  <div class="player" v-show="playlist.length">
     <!-- 或者这里使用v-if也可以解决问题 currentSong初值化无值 -->
     <div class="normal-player" v-show="fullScreen">
       <div class="background">
@@ -92,6 +92,7 @@
         </div>
       </div>
     </div>
+    <mini-player :progress="progress" :toggle-play="togglePlay" />
     <audio
       ref="audioRef"
       @pause="pause"
@@ -105,7 +106,7 @@
 
 <script>
 import { useStore } from "vuex";
-import { computed, watch, ref } from "vue";
+import { computed, watch, ref, nextTick } from "vue";
 
 import useMode from "./use-mode";
 import useFavorite from "./use-favorite";
@@ -117,16 +118,19 @@ import ProgressBar from "./progress-bar.vue";
 import Scroll from "@/components/base/scroll/scroll.vue";
 import { formatTime } from "@/assets/js/util";
 import { PLAY_MODE } from "@/assets/js/constant";
+import MiniPlayer from "./mini-player.vue";
 
 export default {
   name: "player",
   components: {
     ProgressBar,
     Scroll,
+    MiniPlayer,
   },
   setup() {
     // data
     const audioRef = ref(null);
+    const barRef = ref(null);
     const songReady = ref(false);
     const currentTime = ref(0);
     let progressChanging = false;
@@ -198,6 +202,14 @@ export default {
         stopLyric();
       }
     });
+
+    watch(fullScreen, async (newFullScreen) => {
+      if (newFullScreen) {
+        await nextTick();
+        barRef.value.setOffset(progress.value);
+      }
+    });
+
     // methods
     function goBack() {
       store.commit("setFullScreen", false);
@@ -305,9 +317,11 @@ export default {
 
     return {
       audioRef,
+      barRef,
       fullScreen,
       currentTime,
       currentSong,
+      playlist,
       playIcon,
       disableCls,
       progress,
