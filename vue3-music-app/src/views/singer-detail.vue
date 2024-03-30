@@ -1,3 +1,11 @@
+<!--
+ * @Description:
+ * @Version: 1.0
+ * @Author:
+ * @Date: 2024-03-10 20:47:24
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-03-25 23:06:21
+-->
 <template>
   <div class="singer-detail">
     <music-list
@@ -13,6 +21,7 @@
 import { getSingerDetail } from "@/service/singer";
 import { processSongs } from "@/service/song";
 import MusicList from "@/components/music-list/music-list.vue";
+import useMock from "@/mock/use-mock";
 
 export default {
   name: "singer-detail",
@@ -38,7 +47,9 @@ export default {
   },
   async created() {
     const result = await getSingerDetail(this.singer);
-    const songs = await processSongs(result.songs);
+    const { getData } = useMock();
+    // const songs = await processSongs(result.songs);
+    const songs = getData();
     this.songs = songs;
     this.loading = false;
   },

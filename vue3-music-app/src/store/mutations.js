@@ -1,3 +1,11 @@
+/*
+ * @Description:
+ * @Version: 1.0
+ * @Author:
+ * @Date: 2024-03-10 22:16:34
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-03-25 22:44:14
+ */
 const mutations = {
   setPlayingState(state, playing) {
     state.playing = playing

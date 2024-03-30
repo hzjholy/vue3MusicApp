@@ -1,3 +1,11 @@
+/*
+ * @Description:
+ * @Version: 1.0
+ * @Author:
+ * @Date: 2024-03-10 09:39:13
+ * @LastEditors:
+ * @LastEditTime: 2024-03-25 23:19:55
+ */
 import { createRouter, createWebHashHistory } from "vue-router";
 import Recommend from "@/views/recommend";
 import Singer from "@/views/singer";
@@ -8,7 +16,7 @@ import SingerDetail from "@/views/singer-detail";
 const routes = [
   {
     path: "/",
-    redirect: "/recommend",
+    redirect: "/singer/0025NhlN2yWrP4",
   },
   {
     path: "/recommend",

@@ -1,5 +1,15 @@
 import { get } from "./base";
 
+export async function getMockData() {
+  let mockUrl = window.VUE_APP_MUSIC_URL + window.VUE_APP_MUSIC_JSON;
+  const response = await fetch(mockUrl);
+  if (!response.ok) {
+    throw new Error("Failed to fetch lyric");
+  }
+  const result = await response.text();
+  return result;
+}
+
 export function processSongs(songs) {
   if (!songs.length) {
     return Promise.resolve(songs);
@@ -17,6 +27,7 @@ export function processSongs(songs) {
         return song;
       })
       .filter((song) => {
+        // console.log("--------------song",song);
         // return song.url && song.url.indexOf("vkey") > -1;
         // 接口已坏，没有数据
         song.url = "http://127.0.0.1:5501/static/music/01.mp3";

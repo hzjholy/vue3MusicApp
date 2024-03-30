@@ -1,3 +1,11 @@
+/*
+ * @Description:
+ * @Version: 1.0
+ * @Author:
+ * @Date: 2024-03-14 05:09:44
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-03-25 22:59:45
+ */
 import { ref } from "vue";
 
 export default function useMiddleInteractive() {
@@ -11,19 +19,19 @@ export default function useMiddleInteractive() {
   function onMiddleTouchStart(e) {
     touch.startX = e.touches[0].pageX;
     touch.startY = e.touches[0].pageY;
-    touch.directionLocker = ''
+    touch.directionLocker = "";
   }
   function onMiddleTouchMove(e) {
     const dataX = e.touches[0].pageX - touch.startX;
     const dataY = e.touches[0].pageY - touch.startY;
     // 解决拖动时候会偏移
-    const absDeltaX = Math.abs(dataX)
-    const absDeltaY = Math.abs(dataY)
+    const absDeltaX = Math.abs(dataX);
+    const absDeltaY = Math.abs(dataY);
     if (!touch.directionLocker) {
-      touch.directionLocker = absDeltaX >= absDeltaY ? 'h' : 'v'
+      touch.directionLocker = absDeltaX >= absDeltaY ? "h" : "v";
     }
-    if (touch.directionLocker === 'v') {
-      return
+    if (touch.directionLocker === "v") {
+      return;
     }
 
     const left = currentView === "cd" ? 0 : -window.innerWidth;

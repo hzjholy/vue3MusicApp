@@ -31,7 +31,6 @@ import Scroll from "@/components/wrap-scroll";
 import { mapActions, mapState } from "vuex";
 
 const RESERVED_HEIGHT = 40;
-
 export default {
   name: "music-list",
   components: {
@@ -74,6 +73,8 @@ export default {
     },
   },
   mounted() {
+console.log("this.props", this.props);
+
     this.imageHeight = this.$refs.bgImage.clientHeight;
     console.log("this.imageHeight", this.imageHeight);
   },

@@ -1,10 +1,19 @@
+/*
+ * @Description:
+ * @Version: 1.0
+ * @Author:
+ * @Date: 2024-03-10 10:26:16
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-03-23 09:27:00
+ */
 const express = require('express')
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
 const csrf = require('xsrf')
 const registerRouter = require('./router')
 
-const port = process.env.PORT || 9002
+// const port = process.env.PORT || 5502
+const port = 5502
 
 const app = express()
 

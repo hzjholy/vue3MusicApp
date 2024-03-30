@@ -1,3 +1,11 @@
+/*
+ * @Description:
+ * @Version: 1.0
+ * @Author:
+ * @Date: 2024-03-13 05:49:35
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-03-27 05:50:07
+ */
 import { useStore } from "vuex";
 import { computed, ref, watch } from "vue";
 import { getLyric } from "@/service/song";
@@ -15,6 +23,7 @@ export default function useLyric({ songReady, currentTime }) {
   const currentSong = computed(() => store.getters.currentSong);
 
   watch(currentSong, async (newSong) => {
+    console.log("currentSong--------------", currentSong);
     if (!newSong.url || !newSong.id) {
       return;
     }
@@ -24,7 +33,20 @@ export default function useLyric({ songReady, currentTime }) {
     pureMusicLyric.value = "";
     playingLyric.value = "";
 
-    const lyric = await getLyric(newSong);
+    // 检查链接是否匹配模式
+    function isMatching(url) {
+      // 正则表达式模式
+      const pattern = /^https?:\/\//;
+      return pattern.test(url);
+    }
+    // const lyric = await getLyric(newSong);
+    let lyric;
+    if (isMatching(newSong.lyric)) {
+      lyric = await getLyric2(newSong.lyric);
+    } else {
+      lyric = newSong.lyric;
+    }
+
     store.commit("addSongLyric", {
       song: newSong,
       lyric,
@@ -48,6 +70,16 @@ export default function useLyric({ songReady, currentTime }) {
       );
     }
   });
+
+  async function getLyric2(url) {
+    console.log("url===========", url);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Failed to fetch lyric");
+    }
+    const result = await response.text();
+    return result;
+  }
 
   function playLyric() {
     const currentLyricVal = currentLyric.value;

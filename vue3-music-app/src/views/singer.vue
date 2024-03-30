@@ -18,6 +18,7 @@ import { getSingerList } from "@/service/singer";
 import IndexList from "@/components/index-list/index-list";
 // import storage from 'good-storage'
 // import { SINGER_KEY } from '@/assets/js/constant'
+import SingerJSON from "@/../public/data/singer.json";
 
 export default {
   name: "singer",
@@ -31,7 +32,8 @@ export default {
     };
   },
   async created() {
-    const result = await getSingerList();
+    // const result = await getSingerList();
+    const result = SingerJSON;
     this.singers = result.singers;
     console.log("result", result);
   },

@@ -603,6 +603,7 @@ export default {
     &.normal-enter-active,
     &.normal-leave-active {
       transition: all 0.6s;
+      display: block;
       .top,
       .bottom {
         transition: all 0.6s cubic-bezier(0.45, 0, 0.55, 1);
@@ -611,6 +612,7 @@ export default {
     &.normal-enter-from,
     &.normal-leave-to {
       opacity: 0;
+      display: none;
       .top {
         transform: translate3d(0, -100px, 0);
       }

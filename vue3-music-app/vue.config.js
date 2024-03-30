@@ -1,6 +1,15 @@
+/*
+ * @Description:
+ * @Version: 1.0
+ * @Author:
+ * @Date: 2024-03-10 09:39:13
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-03-23 09:22:59
+ */
 const registerRouter = require("./backend/router");
 
 module.exports = {
+  publicPath: "./",
   lintOnSave: true,
   css: {
     loaderOptions: {
@@ -30,5 +39,5 @@ module.exports = {
     }
   },
   productionSourceMap: false,
-  publicPath: process.env.NODE_ENV === "production" ? "/music-next/" : "/",
+  // publicPath: process.env.NODE_ENV === "production" ? "/music-next/" : "/",
 };

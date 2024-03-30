@@ -1,3 +1,11 @@
+/*
+ * @Description:
+ * @Version: 1.0
+ * @Author:
+ * @Date: 2024-03-16 07:12:44
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-03-25 23:04:50
+ */
 import { ref } from "vue";
 import animations from "create-keyframe-animation";
 
@@ -7,9 +15,12 @@ export default function useAnimation() {
   let leaving = false;
 
   function enter(el, done) {
-    if (leaving) afterEnter();
+    if (leaving) afterLeave();
     entering = true;
     const { x, y, scale } = getPosAndScale();
+
+    console.log("x", x);
+    console.log("y", y);
     const animation = {
       0: {
         transform: `translate3d(${x}px,${y}px,0) scale(${scale})`,
@@ -38,6 +49,7 @@ export default function useAnimation() {
   }
 
   function leave(el, done) {
+    console.log("leave");
     if (entering) afterEnter();
     leaving = true;
     const { x, y, scale } = getPosAndScale();
